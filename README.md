@@ -76,3 +76,33 @@ Generated a summary dashboard of key metrics:
 4.  **Reporting:** Results are designed to be exported directly to the final presentation deck.
 
 ## 📁 Project Structure
+```
+/FedEx-Logistics-Optimization
+│
+├── /Data
+│   ├── orders.csv
+│   ├── routes.csv
+│   ├── warehouses.csv
+│   ├── delivery_agents.csv
+│   └── shipments.csv
+│
+├── /SQL_Scripts
+│   ├── Task1.sql (Data Cleaning)
+│   ├── Task2.sql (Delay Analysis)
+│   ├── Task3.sql (Route Optimization)
+│   ├── Task4.sql (Warehouse Performance)
+│   ├── Task5.sql (Agent Performance)
+│   ├── Task6.sql (Tracking Analytics)
+│   └── Task7.sql (KPI Reporting)
+│
+├── C3 Problem Statement.pdf
+├── SQL_Project_Queries.pptx
+└── README.md
+```
+
+## 📝 Conclusion
+This project demonstrates the power of SQL in transforming complex logistics data into a clear narrative. By addressing the "plot" of operational inefficiencies, we uncovered specific, data-backed strategies to improve FedEx's global delivery network, reduce costs, and enhance customer satisfaction.
+
+---
+*Built with SQL for Data Analytics.*
+```
