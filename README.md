@@ -2,8 +2,7 @@
 
 **A SQL-driven analytics project uncovering delivery delays, route inefficiencies, and performance gaps across a simulated FedEx logistics network.**
 
-![SQL](https://img.shields.io/badge/SQL-Analytics-blue) ![Status](https://img.shields.io/badge/status-active-brightgreen) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
-
+![SQL](https://img.shields.io/badge/SQL-Analytics-blue) ![Status](https://img.shields.io/badge/status-active-brightgreen) 
 ---
 
 ## 📖 Overview
