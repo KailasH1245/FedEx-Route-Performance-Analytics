@@ -1,108 +1,128 @@
-# FedEx Logistics Optimization: SQL Analytics Project
+# 📦 FedEx Route Performance Analytics
 
-## 📖 Project Overview
-**Logistics Optimization for Delivery Routes – FedEx**
+**A SQL-driven analytics project uncovering delivery delays, route inefficiencies, and performance gaps across a simulated FedEx logistics network.**
 
-FedEx operates a massive global network connecting over 220 countries, handling millions of daily shipments. However, surging e-commerce volumes, flight delays, and last-mile congestion have created operational bottlenecks.
+![SQL](https://img.shields.io/badge/SQL-Analytics-blue) ![Status](https://img.shields.io/badge/status-active-brightgreen) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-This project transforms raw logistics data into actionable insights. By building a **SQL-driven analytics system**, we analyze shipment performance, identify root causes of delays, and optimize routes to enhance on-time delivery rates and cost efficiency across the global network.
+---
 
-> **The Plot:** In data storytelling, the business challenge is the narrative. Here, the "plot" revolves around a logistics giant struggling with transit delays and route inefficiencies. The "resolution" is a data-driven strategy to reclaim operational excellence, optimize hub utilization, and improve agent performance.
+## 📖 Overview
 
-## 📊 Dataset Description
-The analysis utilizes five interconnected relational tables stored in a SQL database:
+FedEx moves millions of shipments a day across 220+ countries. At that scale, even small inefficiencies — a congested warehouse, an underperforming agent, a slow route — compound into real cost and customer-experience problems.
+
+This project simulates that environment with a five-table relational dataset (orders, routes, warehouses, delivery agents, and shipments) and uses pure SQL to answer the questions a logistics operations team would actually ask:
+
+- Which routes are chronically delayed, and why?
+- Which warehouses and agents are underperforming relative to the network average?
+- Where should volume be shifted to cut delay hours?
+- What does a network-wide, on-time KPI dashboard look like?
+
+The result is a complete pipeline — from raw, messy data to a cleaned schema to a set of decision-ready KPIs — built entirely with SQL window functions, CTEs, and aggregation.
+
+---
+
+## 🗂️ Dataset
+
+Five interconnected CSV tables simulate the core operational data of a logistics network:
 
 | Table | Description | Key Columns |
-| :--- | :--- | :--- |
-| **Orders** | Order-level details including payment and routing. | `Order_ID`, `Customer_ID`, `Order_Date`, `Route_ID`, `Warehouse_ID`, `Order_Amount` |
-| **Routes** | Transportation details between cities and countries. | `Route_ID`, `Source_City`, `Destination_City`, `Distance_KM`, `Avg_Transit_Time_Hours` |
-| **Warehouses** | Hub and sortation center location data. | `Warehouse_ID`, `City`, `Country`, `Capacity_per_day`, `Manager_Name` |
-| **Delivery Agents** | Agent performance and demographic data. | `Agent_ID`, `Agent_Name`, `Zone`, `Experience_Years`, `Avg_Rating` |
-| **Shipments** | Tracking info, timestamps, delay duration, and feedback. | `Shipment_ID`, `Order_ID`, `Agent_ID`, `Pickup_Date`, `Delivery_Date`, `Delay_Hours`, `Delivery_Status` |
+|---|---|---|
+| **orders** | Order-level details including payment and routing | `Order_ID`, `Customer_ID`, `Order_Date`, `Route_ID`, `Warehouse_ID`, `Order_Amount` |
+| **routes** | Transportation details between cities and countries | `Route_ID`, `Source_City`, `Destination_City`, `Distance_KM`, `Avg_Transit_Time_Hours` |
+| **warehouses** | Hub and sortation center data | `Warehouse_ID`, `City`, `Country`, `Capacity_per_day`, `Manager_Name` |
+| **delivery_agents** | Agent performance and demographic data | `Agent_ID`, `Agent_Name`, `Zone`, `Experience_Years`, `Avg_Rating` |
+| **shipments** | Tracking, timestamps, delay duration, and feedback | `Shipment_ID`, `Order_ID`, `Agent_ID`, `Pickup_Date`, `Delivery_Date`, `Delay_Hours`, `Delivery_Status` |
 
-## 🛠️ Methodology & Tasks Executed
+---
 
-### 1. Data Cleaning & Preparation
-*   **Deduplication:** Removed duplicate `Order_ID` and `Shipment_ID` records to ensure data integrity.
-*   **Imputation:** Replaced null `Delay_Hours` with the route-specific average delay.
-*   **Standardization:** Converted all date columns to `YYYY-MM-DD HH:MM:SS` format.
-*   **Validation:** Flagged logical errors (e.g., `Delivery_Date` before `Pickup_Date`) and verified referential integrity across all tables.
+## 🛠️ Methodology
 
-### 2. Delivery Delay Analysis
-*   Calculated actual delivery delay (hours) for every shipment.
-*   Identified the **Top 10 Delayed Routes** using aggregation.
-*   Utilized **SQL Window Functions** to rank shipments by delay within each warehouse.
-*   Compared efficiency between *Express* and *Standard* delivery types.
+The analysis is organized into seven sequential SQL scripts, each building on the cleaned schema from the previous step.
 
-### 3. Route Optimization Insights
-*   Computed the **Distance-to-Time Efficiency Ratio** (`Distance_KM / Avg_Transit_Time_Hours`) for all routes.
-*   Isolated the **3 worst-performing routes** based on efficiency.
-*   Flagged routes where >20% of shipments exceeded expected transit times.
-*   **Outcome:** Provided specific recommendations for hub pair optimization.
+| Script | Focus | Highlights |
+|---|---|---|
+| `Task1.sql` | **Data Cleaning** | Deduplicates `Order_ID`/`Shipment_ID`, imputes null `Delay_Hours` with route-level averages, standardizes date formats, validates referential integrity |
+| `Task2.sql` | **Delay Analysis** | Top 10 delayed routes, window functions ranking shipments by delay per warehouse, Express vs. Standard comparison |
+| `Task3.sql` | **Route Optimization** | Distance-to-time efficiency ratio, worst 3 routes, flags routes with >20% transit overruns |
+| `Task4.sql` | **Warehouse Performance** | On-time delivery % ranking, CTEs identifying above-average-delay warehouses |
+| `Task5.sql` | **Agent Performance** | On-time % per agent per route, sub-85% performers, experience/rating breakdowns |
+| `Task6.sql` | **Shipment Tracking** | Latest status per shipment, high in-transit/returned routes, flags for delays >120 hours |
+| `Task7.sql` | **KPI Reporting** | Avg. delay by source country, network-wide on-time %, warehouse utilization %, route efficiency |
 
-### 4. Warehouse Performance
-*   Ranked warehouses by **On-Time Delivery %**.
-*   Used **CTEs (Common Table Expressions)** to identify warehouses exceeding the global average delay.
-*   Analyzed the ratio of total vs. delayed shipments per hub.
+**Techniques used:** window functions (`RANK`, `ROW_NUMBER`), CTEs, multi-table joins, conditional aggregation, and date/time standardization.
 
-### 5. Delivery Agent Performance
-*   Ranked agents per route by on-time delivery percentage.
-*   Identified agents performing below the **85% threshold**.
-*   Compared average ratings and experience levels between top and bottom performers to suggest training strategies.
+---
 
-### 6. Shipment Tracking Analytics
-*   Determined the latest status for every shipment.
-*   Identified routes with high volumes of "In Transit" or "Returned" items.
-*   Flagged orders with exceptional delays (>120 hours) for bottleneck investigation.
+## 📈 Key Findings
 
-### 7. Advanced KPI Reporting
-Generated a summary dashboard of key metrics:
-*   **Average Delivery Delay** per Source Country.
-*   **On-Time Delivery %** across the network.
-*   **Warehouse Utilization %** relative to daily capacity.
-*   **Route Efficiency** metrics.
+> Populate this section with your actual query outputs once Tasks 1–7 have been run against the dataset. Suggested format:
 
-## 📈 Key Findings & Recommendations
-*(Note: Update this section with your specific SQL results)*
+- **Critical bottlenecks:** *[e.g., Routes originating from Dubai show a 25% higher delay rate, largely tied to customs processing.]*
+- **Agent insights:** *[e.g., Agents with under 2 years of experience have an on-time rate ~15% lower than the network average.]*
+- **Operational wins:** *[e.g., Reallocating 15% of volume from Warehouse A to Warehouse B could cut average delay by ~4 hours.]*
 
-*   **Critical Bottlenecks:** [e.g., Routes originating from Dubai showed a 25% higher delay rate due to customs bottlenecks.]
-*   **Agent Insights:** [e.g., Agents with <2 years experience had a 15% lower on-time rate, suggesting a need for targeted onboarding.]
-*   **Operational Wins:** [e.g., Shifting 15% of volume from Warehouse A to Warehouse B could reduce average delay by 4 hours.]
+---
 
-## 🚀 How to Run
-1.  **Environment:** Ensure you have a SQL environment (PostgreSQL, MySQL, or SQL Server).
-2.  **Schema Setup:** Run the `Task1.sql` script to create tables and load the CSV data.
-3.  **Analysis:** Execute scripts `Task2.sql` through `Task7.sql` sequentially to generate insights.
-4.  **Reporting:** Results are designed to be exported directly to the final presentation deck.
+## 🚀 Getting Started
+
+1. **Environment** — any standard SQL engine works (PostgreSQL, MySQL, or SQL Server).
+2. **Load the data** — run `Task1.sql` to create the schema and load the five CSV files.
+3. **Run the analysis** — execute `Task2.sql` through `Task7.sql` in order.
+4. **Review results** — findings map directly to the sections in `SQL_Project_Queries.pptx`.
+
+```bash
+# Example for PostgreSQL
+psql -U your_user -d fedex_analytics -f Task1.sql
+psql -U your_user -d fedex_analytics -f Task2.sql
+# ...continue through Task7.sql
+```
+
+---
 
 ## 📁 Project Structure
+
 ```
-/FedEx-Logistics-Optimization
+FedEx-Route-Performance-Analytics/
 │
-├── /Data
+├── Data/
 │   ├── orders.csv
 │   ├── routes.csv
 │   ├── warehouses.csv
 │   ├── delivery_agents.csv
 │   └── shipments.csv
 │
-├── /SQL_Scripts
-│   ├── Task1.sql (Data Cleaning)
-│   ├── Task2.sql (Delay Analysis)
-│   ├── Task3.sql (Route Optimization)
-│   ├── Task4.sql (Warehouse Performance)
-│   ├── Task5.sql (Agent Performance)
-│   ├── Task6.sql (Tracking Analytics)
-│   └── Task7.sql (KPI Reporting)
+├── SQL_Scripts/
+│   ├── Task1.sql   # Data Cleaning
+│   ├── Task2.sql   # Delay Analysis
+│   ├── Task3.sql   # Route Optimization
+│   ├── Task4.sql   # Warehouse Performance
+│   ├── Task5.sql   # Agent Performance
+│   ├── Task6.sql   # Shipment Tracking
+│   └── Task7.sql   # KPI Reporting
 │
 ├── C3 Problem Statement.pdf
 ├── SQL_Project_Queries.pptx
 └── README.md
 ```
 
-## 📝 Conclusion
-This project demonstrates the power of SQL in transforming complex logistics data into a clear narrative. By addressing the "plot" of operational inefficiencies, we uncovered specific, data-backed strategies to improve FedEx's global delivery network, reduce costs, and enhance customer satisfaction.
+---
+
+## 🧰 Tech Stack
+
+- **SQL** (window functions, CTEs, joins, aggregation)
+- **CSV** as the raw data interchange format
+- **PowerPoint** for stakeholder-facing reporting
 
 ---
-*Built with SQL for Data Analytics.*
-```
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome — particularly around extending the KPI set, adding a BI-tool integration (Power BI/Tableau), or parameterizing the scripts for other SQL dialects.
+
+## 📄 License
+
+This project is available under the MIT License.
+
+---
+
+*Built with SQL for data analytics.*
