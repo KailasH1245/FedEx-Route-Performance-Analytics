@@ -62,22 +62,6 @@ The analysis is organized into seven sequential SQL scripts, each building on th
 
 ---
 
-## 🚀 Getting Started
-
-1. **Environment** — any standard SQL engine works (PostgreSQL, MySQL, or SQL Server).
-2. **Load the data** — run `Task1.sql` to create the schema and load the five CSV files.
-3. **Run the analysis** — execute `Task2.sql` through `Task7.sql` in order.
-4. **Review results** — findings map directly to the sections in `SQL_Project_Queries.pptx`.
-
-```bash
-# Example for PostgreSQL
-psql -U your_user -d fedex_analytics -f Task1.sql
-psql -U your_user -d fedex_analytics -f Task2.sql
-# ...continue through Task7.sql
-```
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -117,10 +101,6 @@ FedEx-Route-Performance-Analytics/
 ## 🤝 Contributing
 
 Issues and pull requests are welcome — particularly around extending the KPI set, adding a BI-tool integration (Power BI/Tableau), or parameterizing the scripts for other SQL dialects.
-
-## 📄 License
-
-This project is available under the MIT License.
 
 ---
 
